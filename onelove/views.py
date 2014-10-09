@@ -79,7 +79,6 @@ class FleetViewSet(viewsets.ModelViewSet):
 
     @detail_route(methods=['POST'])
     def provision(self, request, pk):
-        results = []
         fleet = models.Fleet.objects.get(pk=pk)
         for application in fleet.applications.all():
             hosts_string = ''
@@ -101,10 +100,15 @@ class FleetViewSet(viewsets.ModelViewSet):
                     'playbook': application.playbook,
                     'private_key_file': inventory_path,
                 }
-                results.append(tasks.provision.delay(config).id)
+                celery_task = tasks.provision.delay(config)
+                db_task = models.Task(
+                    id=celery_task.id,
+                    fleet=fleet,
+                )
+                db_task.save()
         return Response(
             {
-                'result': results
+                'results': [str(task.id) for task in fleet.tasks.all()]
             },
             status=status.HTTP_201_CREATED,
         )

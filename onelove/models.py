@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.utils.http import urlquote
 from django.utils.translation import ugettext_lazy as _
 from model_utils.managers import InheritanceManager
+from uuidfield import UUIDField
 
 
 class UserManager(BaseUserManager):
@@ -170,3 +171,11 @@ class SSHHost(models.Model):
 
     def __unicode__(self):
         return self.ip
+
+
+class Task(models.Model):
+    id = UUIDField(primary_key=True, hyphenate=True)
+    fleet = models.ForeignKey(Fleet, related_name='tasks')
+
+    def __unicode__(self):
+        return str(self.id)
