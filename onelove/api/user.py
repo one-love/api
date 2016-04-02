@@ -3,8 +3,7 @@ from flask_restplus import Resource, abort
 from mongoengine.queryset import NotUniqueError
 from mongoengine.errors import ValidationError
 from .namespaces import ns_user
-from .fields import user_body as body_fields
-from .fields import user_response as response_fields
+from .fields.user import body_fields, response_fields
 
 
 from ..models import User

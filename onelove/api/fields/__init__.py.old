@@ -1,5 +1,5 @@
-from flask_restplus import fields
-from . import api
+from flask_restplus.fields import String
+from .. import api
 
 
 # Roles fields
@@ -93,7 +93,7 @@ provider_fields = api.model(
 service_fields = api.model(
     'Service',
     {
-        'name': fields.String(required=True),
+        'service': fields.String(required=True),
         'user': fields.Nested(user_response),
     }
 )

@@ -2,7 +2,7 @@ from flask import current_app
 from resources import ProtectedResource
 from ..models import Task
 from .namespaces import ns_task
-from .fields import task_fields as fields
+from .fields.task import fields
 
 
 @ns_task.route('', endpoint='tasks')

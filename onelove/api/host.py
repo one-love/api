@@ -2,7 +2,7 @@ from flask_restplus import abort
 from .mixins import ClusterMixin
 from resources import ProtectedResource
 from ..models import HostSSH
-from .fields import host_fields as fields
+from .fields.host import fields
 from .namespaces import ns_cluster
 
 

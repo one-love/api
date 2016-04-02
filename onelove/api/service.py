@@ -1,6 +1,6 @@
 import pagination
 from ..models import Service
-from .fields import service_fields as fields, get_service_fields as get_fields
+from .fields.service import fields, get_fields
 from .mixins import ServiceMixin
 from .namespaces import ns_service
 from resources import ProtectedResource
@@ -31,7 +31,7 @@ class ServiceListAPI(ProtectedResource):
     def post(self):
         """Create service"""
         args = parser.parse_args()
-        service_name = args.get('name')
+        service_name = args.get('service')
         service = Service(name=service_name, user=current_identity.pk)
         try:
             service.save()

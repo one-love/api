@@ -2,8 +2,7 @@ from ..models import Cluster, User
 from resources import ProtectedResource
 from .mixins import ClusterMixin
 from .namespaces import ns_cluster
-from .fields import cluster_fields as fields
-from .fields import get_cluster_fields as get_fields
+from .fields.cluster import fields, get_fields
 from flask_jwt import current_identity
 from flask import current_app
 import pagination

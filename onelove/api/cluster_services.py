@@ -1,9 +1,7 @@
 from flask_restplus import abort
-from onelove.api.fields import (
-    service_fields as fields,
-    post_cluster_service_fields as post_fields,
-    task_fields,
-)
+from .fields.service import fields
+from .fields.cluster_service import post_fields
+from .fields.task import fields as task_fields
 from onelove.api.mixins import ClusterMixin
 from onelove.api.namespaces import ns_cluster
 from onelove.models import Service, User

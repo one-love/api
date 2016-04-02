@@ -1,8 +1,7 @@
 from flask.ext.restplus import abort
 from .mixins import ClusterMixin
 from resources import ProtectedResource
-from ..models import Cluster
-from .fields import provider_fields as fields
+from .fields.provider import fields
 from .namespaces import ns_cluster
 
 

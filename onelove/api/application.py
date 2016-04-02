@@ -3,7 +3,7 @@ from resources import ProtectedResource
 from ..models import Application, Service
 from .mixins import ServiceMixin
 from .namespaces import ns_service
-from .fields import application_fields as fields
+from .fields.application import fields
 
 
 parser = ns_service.parser()

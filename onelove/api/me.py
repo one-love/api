@@ -1,5 +1,5 @@
 from flask_jwt import current_identity
-from .fields import user_response as response_fields
+from .fields.user import response_fields
 from .namespaces import ns_me
 from resources import ProtectedResource
 
