@@ -38,6 +38,12 @@ def fetch_role(playbook_path, role_name):
     galaxy = Galaxy(options)
     role = GalaxyRole(galaxy, role_name)
     role.install()
+    dependencies = get_application_dependencies(
+        playbook_path,
+        role_name,
+    )
+    for role in dependencies:
+        fetch_role(playbook_path, role)
 
 
 def get_application_dependencies(playbook_path, application_name):
@@ -55,20 +61,27 @@ def get_application_dependencies(playbook_path, application_name):
     return dependencies
 
 
-def generate_playbook(playbook_path, cluster_id, application_name):
-    from ..models import Cluster
+def install_service(playbook_path, cluster, service):
+    for application in service.applications:
+        fetch_role(playbook_path, application.galaxy_role)
+
+    return service.applications
+
+
+def generate_playbook(playbook_path, cluster, service):
     pre_tasks = []
-    pre_tasks_file = 'roles/{role}/pre_tasks/main.yml'.format(
-        role=application_name,
-    )
-    pre_tasks_path = '{playbook_path}/provision/{pre_tasks_file}'.format(
-        playbook_path=playbook_path,
-        pre_tasks_file=pre_tasks_file,
-    )
-    if path.isfile(pre_tasks_path):
-        pre_tasks.append(pre_tasks_file)
-    roles = [application_name]
-    cluster = Cluster.objects.get(id=cluster_id)
+    roles = []
+    for application in service.applications:
+        pre_tasks_file = 'roles/{role}/pre_tasks/main.yml'.format(
+            role=application.galaxy_role,
+        )
+        pre_tasks_path = '{playbook_path}/provision/{pre_tasks_file}'.format(
+            playbook_path=playbook_path,
+            pre_tasks_file=pre_tasks_file,
+        )
+        if path.isfile(pre_tasks_path):
+            pre_tasks.append(pre_tasks_file)
+        roles.append(application.galaxy_role)
     site_yml = render_template(
         'site.yml',
         pre_tasks=pre_tasks,
@@ -90,13 +103,13 @@ def run_playbook(playbook_path):
         playbook_path=playbook_path,
     )
     with open(inventory_file, 'w+') as inventory:
-        inventory.write('localhost')
+        inventory.write('127.0.0.1')
     loader = DataLoader()
     variable_manager = VariableManager()
     inventory = Inventory(
         loader=loader,
         variable_manager=variable_manager,
-        host_list=['localhost'],
+        host_list=['127.0.0.1'],
     )
     options = Options(
         ask_pass=False,
@@ -153,17 +166,23 @@ def run_playbook(playbook_path):
 
 
 @current_app.task(bind=True)
-def provision(self, cluster_id, application_name):
+def provision(self, cluster_id, username, service_name):
+    from ..models import Cluster
     playbook_path = mkdtemp()
     try:
-        fetch_role(playbook_path, application_name)
-        dependencies = get_application_dependencies(
-            playbook_path,
-            application_name,
-        )
-        for role in dependencies:
-            fetch_role(playbook_path, role)
-        generate_playbook(playbook_path, cluster_id, application_name)
+        cluster = Cluster.objects.get(id=cluster_id)
+        service = None
+        for service_iterator in cluster.services:
+            if service_iterator.name == service_name:
+                service = service_iterator
+        if service is None:
+            return 'no such service'
+
+        if service.user.username != username:
+            return 'no such user'
+
+        install_service(playbook_path, cluster, service)
+        generate_playbook(playbook_path, cluster, service)
         run_playbook(playbook_path)
     finally:
         rmtree(playbook_path)

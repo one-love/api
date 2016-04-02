@@ -1,9 +1,10 @@
 from flask_restplus import abort
 from resources import ProtectedResource
+
 from ..models import Application, Service
+from .fields.application import fields
 from .mixins import ServiceMixin
 from .namespaces import ns_service
-from .fields.application import fields
 
 
 parser = ns_service.parser()
@@ -77,19 +78,3 @@ class ServiceApplicationAPI(ProtectedResource, ServiceMixin):
                 service.save()
                 return app
         abort(404, error='No such application')
-
-
-@ns_service.route(
-    '/<service_id>/applications/<application_name>/provision',
-    endpoint='services.application.provision'
-)
-class ServiceApplicationProvisionAPI(ProtectedResource, ServiceMixin):
-    @ns_service.marshal_with(fields)
-    def get(self, service_id, application_name):
-        from ..tasks import provision
-        service = self._find_service(service_id)
-        for app in service.applications:
-            if app.name == application_name:
-                provision.delay(service_id, app.galaxy_role)
-                return app
-        abort(404, 'No such application')

@@ -8,7 +8,6 @@ fields = api.model(
     'Service',
     {
         'name': String(required=True),
-        'user': Nested(user_fields),
     },
 )
 
@@ -18,5 +17,6 @@ get_fields = api.clone(
     {
         'id': String(),
         'applications': Nested(application_fields),
+        'user': Nested(user_fields),
     },
 )
