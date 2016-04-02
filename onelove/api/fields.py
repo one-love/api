@@ -110,7 +110,6 @@ post_cluster_service_fields = api.model(
     {
         'service': fields.String,
         'username': fields.String,
-        'email': fields.String,
     },
 )
 
