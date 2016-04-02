@@ -1,12 +1,14 @@
 from flask_restplus.fields import String, Nested
 from .. import api
 from .application import fields as application_fields
+from .user import response_fields as user_fields
 
 
 fields = api.model(
     'Service',
     {
-        'service': String(required=True),
+        'name': String(required=True),
+        'user': Nested(user_fields),
     },
 )
 

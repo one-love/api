@@ -40,7 +40,6 @@ class ClusterServiceListAPI(ProtectedResource, ClusterMixin):
                     )
                 )
 
-        print(service_username)
         try:
             user = User.objects.get(username=service_username)
         except User.DoesNotExist:

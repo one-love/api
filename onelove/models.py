@@ -49,9 +49,6 @@ class HostSSH(EmbeddedDocument):
     def __repr__(self):
         return '<Host %r>' % self.hostname
 
-    def __unicode__(self):
-        return self.__repr__()
-
 
 class ProviderSSH(Provider):
     type = 'SSH'
@@ -95,7 +92,7 @@ class Service(Document):
     applications = ListField(EmbeddedDocumentField(Application))
 
     def __repr__(self):
-        return '<Service %s/%s>' % (self.user.email, self.name)
+        return '<Service %s/%s>' % (self.user.username, self.name)
 
 
 class Cluster(Document):

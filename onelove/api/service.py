@@ -31,8 +31,8 @@ class ServiceListAPI(ProtectedResource):
     def post(self):
         """Create service"""
         args = parser.parse_args()
-        service_name = args.get('service')
-        service = Service(name=service_name, user=current_identity.pk)
+        name = args.get('name')
+        service = Service(name=name, user=current_identity.pk)
         try:
             service.save()
         except NotUniqueError:

@@ -1,4 +1,4 @@
-from flask_restplus.fields import String
+from flask_restplus.fields import String, Nested
 from .. import api
 
 
