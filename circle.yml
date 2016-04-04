@@ -1,0 +1,16 @@
+machine:
+  python:
+    version: 2.7.10
+  environment:
+    FLASK_CONFIG: testing
+  services:
+    - mongodb
+
+dependencies:
+  override:
+    - pip install -r requirements_test.txt
+    - mkdir -p circleci/{testresults,codecoverage}
+
+test:
+  override:
+    - nosetests --with-coverage --cover-branches --cover-erase --cover-xml --cover-xml-file=circleci/codecoverage/coverage.xml --cover-package onelove --with-xunit --xunit-file=circleci/testresults/nosetests.xml
