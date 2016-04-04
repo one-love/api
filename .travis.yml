@@ -1,0 +1,6 @@
+language: python
+services:
+  - mongodb
+install:
+  - pip install -r requirements_test.txt
+script: nosetests
