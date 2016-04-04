@@ -50,7 +50,7 @@ class ServiceAPI(ProtectedResource, ServiceMixin):
         return service
 
     @ns_service.expect(fields)
-    @ns_service.marshal_with(fields)
+    @ns_service.marshal_with(get_fields)
     def put(self, id):
         """Update service"""
         service = self._find_service(id)
@@ -59,7 +59,7 @@ class ServiceAPI(ProtectedResource, ServiceMixin):
         service.save()
         return service
 
-    @ns_service.marshal_with(fields)
+    @ns_service.marshal_with(get_fields)
     def delete(self, id):
         """Delete the service."""
         service = self._find_service(id)

@@ -65,7 +65,7 @@ class ServiceApplicationAPI(ProtectedResource, ServiceMixin):
             if app.name == application_name:
                 app.name = args.get('name')
                 app.galaxy_role = args.get('galaxy_role')
-                app.save()
+                service.save()
                 return app
         abort(404, error='No such application')
 

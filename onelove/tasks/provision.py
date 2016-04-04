@@ -96,6 +96,7 @@ def generate_playbook(playbook_path, cluster, service):
 
 
 def run_playbook(playbook_path):
+    host = '192.168.33.34'
     playbook_file = '{playbook_path}/provision/site.yml'.format(
         playbook_path=playbook_path,
     )
@@ -103,13 +104,13 @@ def run_playbook(playbook_path):
         playbook_path=playbook_path,
     )
     with open(inventory_file, 'w+') as inventory:
-        inventory.write('127.0.0.1')
+        inventory.write(host)
     loader = DataLoader()
     variable_manager = VariableManager()
     inventory = Inventory(
         loader=loader,
         variable_manager=variable_manager,
-        host_list=['127.0.0.1'],
+        host_list=[host],
     )
     options = Options(
         ask_pass=False,
@@ -119,7 +120,7 @@ def run_playbook(playbook_path):
         become=False,
         become_ask_pass=False,
         become_method='sudo',
-        become_user=None,
+        become_user='root',
         check=False,
         connection='smart',
         diff=False,
@@ -135,7 +136,7 @@ def run_playbook(playbook_path):
         new_vault_password_file=None,
         output_file=None,
         private_key_file=None,
-        remote_user=None,
+        remote_user='vagrant',
         scp_extra_args='',
         sftp_extra_args='',
         skip_tags=None,
@@ -160,7 +161,10 @@ def run_playbook(playbook_path):
         variable_manager=variable_manager,
         loader=loader,
         options=options,
-        passwords=None,
+        passwords={
+            'conn_pass': 'vagrant',
+            'become_pass': 'vagrant',
+        },
     )
     executor.run()
 
@@ -177,6 +181,9 @@ def provision(self, cluster_id, username, service_name):
                 service = service_iterator
         if service is None:
             return 'no such service'
+
+        if not service.applications:
+            return 'service has no applications'
 
         if service.user.username != username:
             return 'no such user'
