@@ -1,5 +1,6 @@
--r requirements_dev.txt
+-r requirements_common.txt
 coverage
 factory-boy
+flask-admin
 nose
 autoflake
