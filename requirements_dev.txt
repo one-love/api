@@ -1,10 +1,7 @@
 -r requirements_common.txt
-autopep8
-flake8
 flask-admin
 flask-debugtoolbar
 flask-debug-api
 importmagic
 ipdb
-rope
 yapf
