@@ -14,12 +14,56 @@ from jinja2 import Environment, PackageLoader
 
 
 class Options(object):
-    api_server = 'https://galaxy.ansible.com'
-    ignore_certs = True
-
     def __init__(self, **kwargs):
-        for k, v in kwargs.items():
-            setattr(self, k, v)
+        self.api_server = kwargs.get(
+            'api_server',
+            'https://galaxy.ansible.com',
+        )
+        self.ask_pass = kwargs.get('ask_pass', False)
+        self.ask_su_pass = kwargs.get('ask_su_pass', False)
+        self.ask_sudo_pass = kwargs.get('ask_sudo_pass', False)
+        self.ask_vault_pass = kwargs.get('ask_vault_pass', False)
+        self.become = kwargs.get('become', False)
+        self.become_ask_pass = kwargs.get('become_ask_pass', False)
+        self.become_method = kwargs.get('become_method', 'sudo')
+        self.become_user = kwargs.get('become_user', 'root')
+        self.check = kwargs.get('check', False)
+        self.connection = kwargs.get('connection', 'smart')
+        self.diff = kwargs.get('diff', False)
+        self.extra_vars = kwargs.get('extra_vars', [])
+        self.flush_cache = kwargs.get('flush_cache', None)
+        self.force_handlers = kwargs.get('force_handlers', False)
+        self.forks = kwargs.get('forks', 5)
+        self.ignore_certs = kwargs.get('ignore_certs', True)
+        self.inventory = kwargs.get('inventory', None)
+        self.listhosts = kwargs.get('listhosts', None)
+        self.listtags = kwargs.get('listtags', None)
+        self.listtasks = kwargs.get('listtasks', None)
+        self.module_path = kwargs.get('module_path', None)
+        self.new_vault_password_file = kwargs.get(
+            'new_vault_password_file',
+            None,
+        )
+        self.output_file = kwargs.get('output_file', None)
+        self.private_key_file = kwargs.get('private_key_file', None)
+        self.remote_user = kwargs.get('remote_user', 'vagrant')
+        self.scp_extra_args = kwargs.get('scp_extra_args', '')
+        self.sftp_extra_args = kwargs.get('sftp_extra_args', '')
+        self.skip_tags = kwargs.get('skip_tags', None)
+        self.ssh_common_args = kwargs.get('ssh_common_args', '')
+        self.ssh_extra_args = kwargs.get('ssh_extra_args', '')
+        self.start_at_task = kwargs.get('start_at_task', None)
+        self.step = kwargs.get('step', None)
+        self.su = kwargs.get('su', False)
+        self.su_user = kwargs.get('su_user', None)
+        self.subset = kwargs.get('subset', None)
+        self.sudo = kwargs.get('sudo', False)
+        self.sudo_user = kwargs.get('sudo_user', None)
+        self.syntax = kwargs.get('syntax', None)
+        self.tags = kwargs.get('tags', 'all')
+        self.timeout = kwargs.get('timeout', 10)
+        self.vault_password_file = kwargs.get('vault_password_file', None)
+        self.verbosity = kwargs.get('verbosity', 0)
 
 
 def render_template(template, **kwargs):
@@ -112,49 +156,7 @@ def run_playbook(playbook_path):
         variable_manager=variable_manager,
         host_list=[host],
     )
-    options = Options(
-        ask_pass=False,
-        ask_su_pass=False,
-        ask_sudo_pass=False,
-        ask_vault_pass=False,
-        become=False,
-        become_ask_pass=False,
-        become_method='sudo',
-        become_user='root',
-        check=False,
-        connection='smart',
-        diff=False,
-        extra_vars=[],
-        flush_cache=None,
-        force_handlers=False,
-        forks=5,
-        inventory=inventory_file,
-        listhosts=None,
-        listtags=None,
-        listtasks=None,
-        module_path=None,
-        new_vault_password_file=None,
-        output_file=None,
-        private_key_file=None,
-        remote_user='vagrant',
-        scp_extra_args='',
-        sftp_extra_args='',
-        skip_tags=None,
-        ssh_common_args='',
-        ssh_extra_args='',
-        start_at_task=None,
-        step=None,
-        su=False,
-        su_user=None,
-        subset=None,
-        sudo=False,
-        sudo_user=None,
-        syntax=None,
-        tags='all',
-        timeout=10,
-        vault_password_file=None,
-        verbosity=0,
-    )
+    options = Options(inventory=inventory_file)
     executor = PlaybookExecutor(
         playbooks=[playbook_file],
         inventory=inventory,
@@ -162,11 +164,12 @@ def run_playbook(playbook_path):
         loader=loader,
         options=options,
         passwords={
-            'conn_pass': 'vagrant',
             'become_pass': 'vagrant',
+            'conn_pass': 'vagrant',
         },
     )
-    executor.run()
+    result = executor.run()
+    return result
 
 
 @current_app.task(bind=True)
@@ -190,7 +193,7 @@ def provision(self, cluster_id, username, service_name):
 
         install_service(playbook_path, cluster, service)
         generate_playbook(playbook_path, cluster, service)
-        run_playbook(playbook_path)
+        result = run_playbook(playbook_path)
     finally:
         rmtree(playbook_path)
     return True
