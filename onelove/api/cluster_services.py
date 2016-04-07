@@ -29,7 +29,7 @@ class ClusterServiceListAPI(ProtectedResource, ClusterMixin):
         cluster = self._find_cluster(cluster_id)
         service_id = args.get('service_id')
         for service in cluster.services:
-            if service.id == service_id:
+            if str(service.id) == service_id:
                 abort(
                     409,
                     'Service %s is already part of cluster %s' % (
@@ -57,7 +57,7 @@ class ClusterServiceAPI(ProtectedResource, ClusterMixin):
     def delete(self, cluster_id, service_id):
         cluster = self._find_cluster(cluster_id)
         for service in cluster.services:
-            if service.id == service_id:
+            if str(service.id) == service_id:
                 cluster.services.remove(service)
                 cluster.save()
                 return service
