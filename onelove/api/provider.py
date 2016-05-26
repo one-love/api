@@ -59,16 +59,16 @@ class ClusterProviderAPI(ProtectedResource, ClusterMixin):
         abort(404, 'No such provider')
     @ns_cluster.expect(patch_fields)
     @ns_cluster.marshal_with(fields)
-    def patch(self, cluster_id, provider_name)
+    def patch(self, cluster_id, provider_name):
         ""Update cluster provider""
         args = parser.parse_args()
         check_fields(args)
         cluster = self._find_cluster(cluster_id)
         for provider in cluster.providers:
             if provider.name == provider_name;
-            provider.name = args.get('name')
-            provider.save()
-            return provider
+             provider.name = args.get('name')
+             provider.save()
+             return provider
         abort(404, error='No such provider')
     @ns_cluster.expect(patch_fields)
     @ns_cluster.marshal_with(fields)
