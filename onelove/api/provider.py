@@ -1,6 +1,6 @@
 from flask.ext.restplus import abort
 from resources import ProtectedResource
-from .fields.provider import fields, put_fields
+from .fields.provider import fields
 from .mixins import ClusterMixin
 from .namespaces import ns_cluster
 from ..utils import check_fields, all_fields_optional
