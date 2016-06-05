@@ -155,3 +155,9 @@ class Provision(Document):
     cluster = ReferenceField(Cluster)
     service = ReferenceField(Service)
     user = ReferenceField(User)
+
+class Log(Document):
+    status = StringField(max_length=63, blank=False)
+
+    def list(EmbeddedDocument):
+        return '<Provision >'

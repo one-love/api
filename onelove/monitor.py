@@ -3,7 +3,7 @@ import zmq.green as zmq
 
 def monitor():
     from . import current_app
-    from .models import Provision
+    from .models import Provision,Log
 
     context = zmq.Context()
     socket = context.socket(zmq.REP)
@@ -18,6 +18,7 @@ def monitor():
             data = {
                 'id': task_json['id'],
                 'status': provision.status,
+                'log': log.list
             }
         elif task_json['type'] == 'log':
             data = {
