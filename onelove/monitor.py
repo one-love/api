@@ -18,7 +18,7 @@ def monitor():
             data = {
                 'id': task_json['id'],
                 'status': provision.status,
-                'log': log.list
+                'log': provision.applications,
             }
         elif task_json['type'] == 'log':
             data = {
