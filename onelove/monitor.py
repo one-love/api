@@ -3,7 +3,7 @@ import zmq.green as zmq
 
 def monitor():
     from . import current_app
-    from .models import Provision,Log
+    from .models import Provision
 
     context = zmq.Context()
     socket = context.socket(zmq.REP)
