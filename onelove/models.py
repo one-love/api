@@ -156,3 +156,10 @@ class Provision(Document):
     service = ReferenceField(Service)
     user = ReferenceField(User)
     applications = ListField(EmbeddedDocumentField(Provision))
+
+class Log(EmbeddedDocument):
+    status = StringField(max_length=512)
+    galaxy_role = StringField(max_length=1024)
+
+    def __repr__(self):
+        return '<Provision >'
