@@ -8,7 +8,7 @@ This is the API part of [One Love](https://one-love.github.io) based on Python F
 
 ### Contributing
 
-If you are intresting in contributing to this project, be sure to visit the [contributing page](https://github.com/one-love/one-love/doc/contributing.md). For easier development, take a look at [One Love Vagrant repository](https://github.com/one-love/vagrant-one-love).
+If you are intresting in contributing to this project, be sure to visit the [contributing page](https://github.com/one-love/one-love/doc/contributing.md). For easier development, take a look at the [main One Love repository](https://github.com/one-love/one-love).
 
 ### Usage
 To get a login token:
