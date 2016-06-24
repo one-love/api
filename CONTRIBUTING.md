@@ -80,6 +80,18 @@ Test it, don't guess it. Cover all features you make with unit tests.
 If refactoring, make sure tests pass, otherwise your pull request won't be
 accepted.
 
+In order to run a test. Run the following command in the repo directory.
+
+    $ docker-compose run --rm backend bin/test.sh
+
+When the testing is finished you can get one of the following results:
+
+  - . test passed
+  - F your test failed
+  - E something really bad happend
+
+
+
 ### Coding style
 
 __Indentation:__
