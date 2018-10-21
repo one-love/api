@@ -16,7 +16,7 @@ jobs:
       - checkout
       - run:
           name: Run tests
-          command: bin/test.sh
+          command: bin/test.sh ci
       - run:
           name: Publish code coverage
           command: |

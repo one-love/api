@@ -2,7 +2,6 @@ import os
 
 SECRET_KEY = 'iQfPvB6sZaNHqVFI5CJa9rM1xOEVHKIM0LwifT04yLsPlZhSSvaDuZXOgJFSpJVq'
 REDIS_HOST = 'redis'
-MONGODB_HOST = os.environ.get('MONGODB_HOST', 'mongodb')
 
 
 class Config:
@@ -18,7 +17,10 @@ class Config:
     JWT_COOKIE_SECURE = True
     #  JWT_ACCESS_TOKEN_EXPIRES = timedelta(seconds=1)
     #  JWT_REFRESH_TOKEN_EXPIRES = timedelta(seconds=10)
-    MONGODB_HOST = MONGODB_HOST
+    MONGODB_SETTINGS = {
+        'host': 'mongodb',
+        'db': 'onelove',
+    }
     REDIS_HOST = REDIS_HOST
     CELERY_LOG_LEVEL = 'INFO'
     CELERY_BROKER_URL = 'redis://{}:6379'.format(REDIS_HOST)
@@ -41,6 +43,10 @@ class DevConfig(Config):
 class TestConfig(Config):
     TESTING = True
     JWT_COOKIE_SECURE = False
+    MONGODB_SETTINGS = {
+        'host': MONGODB_HOST,
+        'db': 'onelovetest',
+    }
 
 
 class ProdConfig(Config):
